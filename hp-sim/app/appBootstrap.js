@@ -166,7 +166,6 @@ const AVAILABLE_USDAS = Object.freeze([
   { file: 'slideprinter_hexagon.usda', label: 'Slideprinter (hexagon)' },
   { file: 'slideprinter_single_pinholes.usda', label: 'Slideprinter (single pinholes)' },
   { file: 'opencable_8belt.usda', label: 'OpenCable — 8-belt prototype' },
-  { file: 'opencable_8belt.usda', label:'Open Printer'},
 ]);
 
 function initHpSim() {
