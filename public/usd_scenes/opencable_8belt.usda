@@ -13,13 +13,15 @@
 # Machine envelope: 2440 x 1220 mm
 # Carriage: 350 x 350 mm
 # Eight independent belt/spool drives: A-H
-# Four carriage attachment points: A, B, C, D
-# Each carriage corner is represented by two independent belts.
+# Eight carriage pulley points follow the eight geometric corners of the
+# chamfered SVG carriage outline.
+# SVG is in millimetres; hp-sim5 uses metres (1 unit = 1 metre).
+# The 350 mm square has 45 mm corner chamfers, giving these eight corners:
+# (-130,175), (130,175), (175,130), (175,-130),
+# (130,-175), (-130,-175), (-175,-130), (-175,130) mm.
 #
-# The exact mechanical anchor/pulley coordinates are intentionally kept
-# explicit here so that the scene can be tuned without changing the physics
-# engine. The current coordinates are a simulation baseline, not the final
-# mechanical design.
+# Existing spool positions, cable joints, cable paths and physics parameters
+# are otherwise kept unchanged.
 
 def Xform "World"
 {
@@ -165,12 +167,12 @@ def Xform "World"
         }
 
         # --------------------------------------------------------------
-        # Four carriage attachment points, 350 x 350 mm square.
-        # SVG corner convention: A=top-left, B=top-right,
-        # C=bottom-right, D=bottom-left.
-        # 350 mm = 0.350 m, so each corner is at +/-0.175 m.
+        # Eight carriage pulley points from the SVG octagonal outline.
+        # Coordinates are the eight geometric corners of the 350 x 350 mm
+        # plate with 45 mm chamfers, converted from mm to metres.
+        # Clockwise order from top-left: A-H.
         # --------------------------------------------------------------
-        def Circle "AttachmentA" (
+        def Circle "PulleyA" (
             apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
         )
         {
@@ -178,13 +180,13 @@ def Xform "World"
             rel material:binding = </World/PhysicsScene/CarriageMaterial>
             custom bool cable:linkable = 1
             double radius = 0.015
-            double3 xformOp:translate = (-0.175, 0.175, 0)
+            double3 xformOp:translate = (-0.130, 0.175, 0)
             uniform token[] xformOpOrder = ["xformOp:translate"]
             float physics:mass = 0.25
             float3 physics:angularVelocity = (0,0,0)
             matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
         }
-        def Circle "AttachmentB" (
+        def Circle "PulleyB" (
             apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
         )
         {
@@ -192,13 +194,13 @@ def Xform "World"
             rel material:binding = </World/PhysicsScene/CarriageMaterial>
             custom bool cable:linkable = 1
             double radius = 0.015
-            double3 xformOp:translate = (0.175, 0.175, 0)
+            double3 xformOp:translate = (0.130, 0.175, 0)
             uniform token[] xformOpOrder = ["xformOp:translate"]
             float physics:mass = 0.25
             float3 physics:angularVelocity = (0,0,0)
             matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
         }
-        def Circle "AttachmentC" (
+        def Circle "PulleyC" (
             apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
         )
         {
@@ -206,13 +208,13 @@ def Xform "World"
             rel material:binding = </World/PhysicsScene/CarriageMaterial>
             custom bool cable:linkable = 1
             double radius = 0.015
-            double3 xformOp:translate = (0.175, -0.175, 0)
+            double3 xformOp:translate = (0.175, 0.130, 0)
             uniform token[] xformOpOrder = ["xformOp:translate"]
             float physics:mass = 0.25
             float3 physics:angularVelocity = (0,0,0)
             matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
         }
-        def Circle "AttachmentD" (
+        def Circle "PulleyD" (
             apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
         )
         {
@@ -220,34 +222,94 @@ def Xform "World"
             rel material:binding = </World/PhysicsScene/CarriageMaterial>
             custom bool cable:linkable = 1
             double radius = 0.015
-            double3 xformOp:translate = (-0.175, -0.175, 0)
+            double3 xformOp:translate = (0.175, -0.130, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            float physics:mass = 0.25
+            float3 physics:angularVelocity = (0,0,0)
+            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
+        }
+        def Circle "PulleyE" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            token[] ecs:tags = ["Attachment"]
+            rel material:binding = </World/PhysicsScene/CarriageMaterial>
+            custom bool cable:linkable = 1
+            double radius = 0.015
+            double3 xformOp:translate = (0.130, -0.175, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            float physics:mass = 0.25
+            float3 physics:angularVelocity = (0,0,0)
+            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
+        }
+        def Circle "PulleyF" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            token[] ecs:tags = ["Attachment"]
+            rel material:binding = </World/PhysicsScene/CarriageMaterial>
+            custom bool cable:linkable = 1
+            double radius = 0.015
+            double3 xformOp:translate = (-0.130, -0.175, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            float physics:mass = 0.25
+            float3 physics:angularVelocity = (0,0,0)
+            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
+        }
+        def Circle "PulleyG" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            token[] ecs:tags = ["Attachment"]
+            rel material:binding = </World/PhysicsScene/CarriageMaterial>
+            custom bool cable:linkable = 1
+            double radius = 0.015
+            double3 xformOp:translate = (-0.175, -0.130, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            float physics:mass = 0.25
+            float3 physics:angularVelocity = (0,0,0)
+            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
+        }
+        def Circle "PulleyH" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            token[] ecs:tags = ["Attachment"]
+            rel material:binding = </World/PhysicsScene/CarriageMaterial>
+            custom bool cable:linkable = 1
+            double radius = 0.015
+            double3 xformOp:translate = (-0.175, 0.130, 0)
             uniform token[] xformOpOrder = ["xformOp:translate"]
             float physics:mass = 0.25
             float3 physics:angularVelocity = (0,0,0)
             matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
         }
 
-        # Use the original hp-sim5 rigid-group rendering mechanism.
-        # The render path follows the four SVG corner/pulley locations.
+        # Native hp-sim5 rigid-group mechanism: the eight pulley points move
+        # as one rigid carriage and render as the SVG octagonal perimeter.
         def RigidGroup "Carriage" {
             rel rigidGroup:members = [
-                </World/SlideprinterScene/AttachmentA>,
-                </World/SlideprinterScene/AttachmentB>,
-                </World/SlideprinterScene/AttachmentC>,
-                </World/SlideprinterScene/AttachmentD>
-            custom string rigidGroup:renderIndices = "[0,1,2,3,0]"
+                </World/SlideprinterScene/PulleyA>,
+                </World/SlideprinterScene/PulleyB>,
+                </World/SlideprinterScene/PulleyC>,
+                </World/SlideprinterScene/PulleyD>,
+                </World/SlideprinterScene/PulleyE>,
+                </World/SlideprinterScene/PulleyF>,
+                </World/SlideprinterScene/PulleyG>,
+                </World/SlideprinterScene/PulleyH>
+            custom string rigidGroup:renderIndices = "[0,1,2,3,4,5,6,7,0]"
         }
 
         # Each belt is represented by one joint. The spool is the hybrid
         # endpoint so its rotation changes stored line length (winding).
-        def CableJoint "JointA" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolA>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentA>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointB" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolB>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentA>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointC" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolC>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentB>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointD" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolD>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentB>; double restLength = 1.08; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointE" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolE>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentC>; double restLength = 1.08; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointF" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolF>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentC>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointG" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolG>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentD>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
-        def CableJoint "JointH" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolH>; custom rel physics:body1 = </World/SlideprinterScene/AttachmentD>; double restLength = 1.08; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointA" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolA>; custom rel physics:body1 = </World/SlideprinterScene/PulleyA>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointB" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolB>; custom rel physics:body1 = </World/SlideprinterScene/PulleyB>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointC" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolC>; custom rel physics:body1 = </World/SlideprinterScene/PulleyC>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointD" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolD>; custom rel physics:body1 = </World/SlideprinterScene/PulleyD>; double restLength = 1.08; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointE" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolE>; custom rel physics:body1 = </World/SlideprinterScene/PulleyE>; double restLength = 1.08; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointF" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolF>; custom rel physics:body1 = </World/SlideprinterScene/PulleyF>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointG" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolG>; custom rel physics:body1 = </World/SlideprinterScene/PulleyG>; double restLength = 0.99; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
+        def CableJoint "JointH" () { custom rel physics:body0 = </World/SlideprinterScene/SpoolH>; custom rel physics:body1 = </World/SlideprinterScene/PulleyH>; double restLength = 1.08; double2 localPos0 = (0,0); double2 localPos1 = (0,0) }
 
         def Xform "CablePathA" (apiSchemas = ["CablePathAPI"]) { custom bool[] cablePath:clockwise = [1,1]; custom rel cablePath:joints = [</World/SlideprinterScene/JointA>]; custom token[] cablePath:linkTypes = ["hybrid","attachment"]; custom double[] cablePath:stored = [0,0]; custom double cablePath:stiffness = 20000.0; custom double cablePath:damping = 0.0; custom double cablePath:halfWidth = 0.001; }
         def Xform "CablePathB" (apiSchemas = ["CablePathAPI"]) { custom bool[] cablePath:clockwise = [1,1]; custom rel cablePath:joints = [</World/SlideprinterScene/JointB>]; custom token[] cablePath:linkTypes = ["hybrid","attachment"]; custom double[] cablePath:stored = [0,0]; custom double cablePath:stiffness = 20000.0; custom double cablePath:damping = 0.0; custom double cablePath:halfWidth = 0.001; }
