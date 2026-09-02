@@ -165,37 +165,12 @@ def Xform "World"
         }
 
         # --------------------------------------------------------------
-        # Four carriage attachment points, 350 x 350 mm square
+        # Four carriage attachment points, 350 x 350 mm square.
+        # SVG corner convention: A=top-left, B=top-right,
+        # C=bottom-right, D=bottom-left.
+        # 350 mm = 0.350 m, so each corner is at +/-0.175 m.
         # --------------------------------------------------------------
         def Circle "AttachmentA" (
-            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
-        )
-        {
-            token[] ecs:tags = ["Attachment"]
-            rel material:binding = </World/PhysicsScene/CarriageMaterial>
-            custom bool cable:linkable = 1
-            double radius = 0.015
-            double3 xformOp:translate = (-0.175, -0.175, 0)
-            uniform token[] xformOpOrder = ["xformOp:translate"]
-            float physics:mass = 0.25
-            float3 physics:angularVelocity = (0,0,0)
-            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
-        }
-        def Circle "AttachmentB" (
-            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
-        )
-        {
-            token[] ecs:tags = ["Attachment"]
-            rel material:binding = </World/PhysicsScene/CarriageMaterial>
-            custom bool cable:linkable = 1
-            double radius = 0.015
-            double3 xformOp:translate = (0.175, -0.175, 0)
-            uniform token[] xformOpOrder = ["xformOp:translate"]
-            float physics:mass = 0.25
-            float3 physics:angularVelocity = (0,0,0)
-            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
-        }
-        def Circle "AttachmentC" (
             apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
         )
         {
@@ -209,7 +184,7 @@ def Xform "World"
             float3 physics:angularVelocity = (0,0,0)
             matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
         }
-        def Circle "AttachmentD" (
+        def Circle "AttachmentB" (
             apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
         )
         {
@@ -223,17 +198,44 @@ def Xform "World"
             float3 physics:angularVelocity = (0,0,0)
             matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
         }
+        def Circle "AttachmentC" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            token[] ecs:tags = ["Attachment"]
+            rel material:binding = </World/PhysicsScene/CarriageMaterial>
+            custom bool cable:linkable = 1
+            double radius = 0.015
+            double3 xformOp:translate = (0.175, -0.175, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            float physics:mass = 0.25
+            float3 physics:angularVelocity = (0,0,0)
+            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
+        }
+        def Circle "AttachmentD" (
+            apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "MaterialBindingAPI"]
+        )
+        {
+            token[] ecs:tags = ["Attachment"]
+            rel material:binding = </World/PhysicsScene/CarriageMaterial>
+            custom bool cable:linkable = 1
+            double radius = 0.015
+            double3 xformOp:translate = (-0.175, -0.175, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            float physics:mass = 0.25
+            float3 physics:angularVelocity = (0,0,0)
+            matrix3d physics:inertiaTensor = ((1e-4,0,0),(0,1e-4,0),(0,0,1e-4))
+        }
 
-        # Native hp-sim5 rigid-group rendering: connect the four carriage
-        # corners in order and close the loop. The corner attachment points
-        # are also the future pulley centers.
+        # Use the original hp-sim5 rigid-group rendering mechanism.
+        # The render path follows the four SVG corner/pulley locations.
         def RigidGroup "Carriage" {
             rel rigidGroup:members = [
                 </World/SlideprinterScene/AttachmentA>,
                 </World/SlideprinterScene/AttachmentB>,
                 </World/SlideprinterScene/AttachmentC>,
                 </World/SlideprinterScene/AttachmentD>
-            custom string rigidGroup:renderIndices = "[0,1,3,2,0]"
+            custom string rigidGroup:renderIndices = "[0,1,2,3,0]"
         }
 
         # Each belt is represented by one joint. The spool is the hybrid
