@@ -1,4 +1,3 @@
-import './opencable-carriage-render.js';
 import { createHpSimApp } from './appBootstrap.js';
 
 async function bootHpSim() {
